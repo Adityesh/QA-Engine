@@ -8,7 +8,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-func verifyRequest(response http.ResponseWriter, request *http.Request) error {
+func VerifyRequest(response http.ResponseWriter, request *http.Request) error {
 	c, err := request.Cookie("token")
 
 	if err != nil {
