@@ -49,7 +49,7 @@ func main() {
 	// Login a user to the application
 	router.HandleFunc("/user/login", func(rw http.ResponseWriter, r *http.Request) {
 		controllerAuth.UserLoginController(rw, r, QAEngineDatabase)
-	})
+	}).Methods("POST")
 
 	// Add a new question to the database
 	router.HandleFunc("/user/question", func(rw http.ResponseWriter, r *http.Request) {

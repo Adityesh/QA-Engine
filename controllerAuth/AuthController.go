@@ -157,12 +157,13 @@ func UserLoginController(response http.ResponseWriter, request *http.Request, QA
 				})
 				return
 			} else {
-				response.WriteHeader(http.StatusOK)
+				
 				http.SetCookie(response, &http.Cookie{
 					Name : "token",
 					Value : tokenString,
 					Expires : expirationTime,
 				})
+				response.WriteHeader(http.StatusOK)
 				json.NewEncoder(response).Encode(Result{
 					Err : false,
 					Message : "A-OK",

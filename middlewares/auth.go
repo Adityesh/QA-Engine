@@ -15,10 +15,10 @@ func VerifyRequest(response http.ResponseWriter, request *http.Request) error {
 		if err == http.ErrNoCookie {
 			// Cookie not present in the request
 			response.WriteHeader(http.StatusUnauthorized)
-			return errors.New("401")
+			return errors.New(err.Error())
 		}
 		response.WriteHeader(http.StatusBadRequest)
-		return errors.New("404")
+		return errors.New(err.Error())
 		
 		
 	} else {

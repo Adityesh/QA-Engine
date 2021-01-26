@@ -9,7 +9,7 @@ import (
 	// "fmt"
 	"net/http"
 	"time"
-	"github.com/Adityesh/QA-Engine/middlewares"
+    "example.org/middlewares"
 	"example.org/model"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -53,12 +53,23 @@ type AnswerRequestQuestion struct {
 }
 
 func AddQuestion(response http.ResponseWriter, request *http.Request, QAEngineDatabase *mongo.Database) {
-	
-	middlewares.
+	err := middlewares.VerifyRequest(response, request)
+
+	// Unauthorized access
+	if err != nil {
+		json.NewEncoder(response).Encode(Result{
+			Err : false,
+			Message : err.Error(),
+		})
+		return
+	} 
+
+	// Authorized
+
 	var questionDetails RequestQuestion
 	json.NewDecoder(request.Body).Decode(&questionDetails)
 	var person model.UserModel
-	err := checkUserInDatabase(&questionDetails, QAEngineDatabase, &person)
+	err = checkUserInDatabase(&questionDetails, QAEngineDatabase, &person)
 	if err != nil {
 		// User is not present in the database
 		json.NewEncoder(response).Encode(Result{Err: false, Message: "User not present in the database"})
@@ -147,6 +158,19 @@ func AddAnswer(response http.ResponseWriter, request *http.Request, QAEngineData
 	// 3. Get the userid of the person who is posting the answer
 	// 4. Get the answer content for the question
 	// Steps 1, 2 ,4
+
+	err := middlewares.VerifyRequest(response, request)
+
+	// Unauthorized access
+	if err != nil {
+		json.NewEncoder(response).Encode(Result{
+			Err : false,
+			Message : err.Error(),
+		})
+		return
+	} 
+
+	// Authorized
 	var answerRequestDetails AnswerRequestQuestion
 	json.NewDecoder(request.Body).Decode(&answerRequestDetails)
 
@@ -192,6 +216,19 @@ func AddUpVoteToQuestion(response http.ResponseWriter, request *http.Request, QA
 	// 7. Add the vote or downvote to the user document of the person who voted if not voted
 
 	// Steps 1, 2, 3
+
+	err := middlewares.VerifyRequest(response, request)
+
+	// Unauthorized access
+	if err != nil {
+		json.NewEncoder(response).Encode(Result{
+			Err : false,
+			Message : err.Error(),
+		})
+		return
+	} 
+
+	// Authorized
 	var questionDetails UpVoteRequestQuestion
 
 	json.NewDecoder(request.Body).Decode(&questionDetails)
@@ -200,7 +237,7 @@ func AddUpVoteToQuestion(response http.ResponseWriter, request *http.Request, QA
 	// Add +1 vote to the question vote count
 	// Step 5 Check if the vote is already casted by the user
 	var voteDoc model.Votes
-	err := QAEngineDatabase.Collection("votes").FindOne(context.TODO(), bson.M{
+	err = QAEngineDatabase.Collection("votes").FindOne(context.TODO(), bson.M{
 		"username": questionDetails.VoteUsername,
 		"email":    questionDetails.VoteEmail,
 	}).Decode(&voteDoc)
