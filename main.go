@@ -17,6 +17,7 @@ import (
 var QAEngineDatabase *mongo.Database
 
 func HomeHandlerEndpoint(response http.ResponseWriter, request *http.Request)  {
+	response.Header().Set("Access-Control-Allow-Origin", "*")
 	fmt.Fprintf(response, "Hello from home page")
 }
 
@@ -76,7 +77,7 @@ func main() {
 		controllerQuestion.GetAllQuestionsByOrder(rw, r, QAEngineDatabase)
 	})
 
-	http.ListenAndServe(":3000", router)
+	http.ListenAndServe(":5000", router)
 
 	defer os.Unsetenv("TOKEN_SECRET")
 }

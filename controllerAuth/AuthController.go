@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 	// "os"
 	"time"
@@ -82,7 +81,6 @@ func UserRegisterController(response http.ResponseWriter, request *http.Request,
 			Err : false,
 			Message : "User added to the database",
 		}
-		fmt.Println(responseResult)
 		json.NewEncoder(response).Encode(responseResult)
 	}
 
@@ -200,7 +198,6 @@ func addUserToDatabase(user *model.UserModel, hashedPass string, QAEngineDatabas
 
 	user.Password = hashedPass
 	// User not found , insert a new user in the database
-	fmt.Println(user)
 	result, err := QAEngineDatabase.Collection("users").InsertOne(context.TODO(), user)
 	if err != nil {
 		return nil, errors.New("Internal Server Error")
